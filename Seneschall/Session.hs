@@ -4,7 +4,11 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Seneschall.Session where
+module Seneschall.Session 
+    ( createSessionStore
+    , createSession
+    , lookupSession
+) where
 
 import Prelude hiding (lookup)
 import Control.Applicative ((<$>))
@@ -64,8 +68,4 @@ lookupSession :: String -> WebM (Maybe Session)
 lookupSession k = do
     s <- session <$> ask
     liftIO $ query s (Lookup k)
-
-sessionFromCookie :: ReqM ()
-sessionFromCookie = do
-    header "Cookie"
 
