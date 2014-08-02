@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
@@ -9,7 +10,6 @@ module Seneschall.Types where
 import Prelude hiding (lookup)
 
 import Control.Applicative
-import Control.Monad (mzero)
 import Control.Monad.IO.Class (MonadIO)
 import qualified Control.Monad.Reader as R
 import qualified Control.Monad.State  as S
@@ -21,6 +21,7 @@ import Data.Text.Lazy (Text)
 import Data.Typeable
 import Database.Persist.Sql (ConnectionPool)
 import Database.Persist.TH (derivePersistField)
+import GHC.Generics
 import Web.Scotty.Trans (ScottyT, ActionT)
 
 -- session key is a string (will be stored in a cookie)
@@ -45,17 +46,10 @@ data Config = Config {
     dbPass :: String,
     dbPort :: Int,
     htdoc  :: String
-} deriving (Show)
-instance FromJSON Config where
-    parseJSON (Object v) = Config <$>
-                           v .: "port"   <*>
-                           v .: "dbHost" <*>
-                           v .: "dbName" <*>
-                           v .: "dbUser" <*>
-                           v .: "dbPass" <*>
-                           v .: "dbPort" <*>
-                           v .: "htdoc"
-    parseJSON _          = mzero
+} deriving (Show, Generic)
+
+instance FromJSON Config
+instance ToJSON   Config
 
 -- global values for the reader monad
 data Globals = Globals {

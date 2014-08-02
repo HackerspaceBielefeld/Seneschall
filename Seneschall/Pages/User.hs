@@ -3,8 +3,8 @@ module Seneschall.Pages.User where
 
 import Blaze.ByteString.Builder (toLazyByteString)
 import qualified Control.Monad.State as State
-import Control.Monad.IO.Class (liftIO)
 import Control.Applicative ((<$>))
+import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Class (lift)
 import Crypto.Scrypt
 import Data.ByteString.Char8 (pack)
