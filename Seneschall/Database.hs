@@ -26,13 +26,10 @@ WebUser
     password ByteString
     status   UserStatus
     deriving Show
-Role
-    name String
-    deriving Show
 UserRole
     userId WebUserId
-    roleId RoleId
-    UniqueUserRole userId roleId
+    role   Role
+    deriving Show
 |]
 
 dbFromConfig :: Config -> String

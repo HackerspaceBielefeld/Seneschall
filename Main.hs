@@ -34,7 +34,7 @@ dispatcher = do
     get  "/"       Root.root
     post "/login"  User.login
     get  "/logout" User.logout
-    get  "/admin"  $ User.restoreSession >> User.requiredRole "ADMIN"
+    get  "/admin"  $ User.restoreSession >> User.requiredRole Admin
                    (text "super secret admin page")
     notFound $ text "you appear to be lost"
 

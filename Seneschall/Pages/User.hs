@@ -4,7 +4,6 @@ module Seneschall.Pages.User where
 import Blaze.ByteString.Builder (toLazyByteString)
 import qualified Control.Monad.State as State
 import Control.Applicative ((<$>))
-import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Class (lift)
 import Crypto.Scrypt
 import Data.ByteString.Char8 (pack)
@@ -78,12 +77,10 @@ userFromSession s = do
     let uKey   = user s
         userId = (keyFromIntegral uKey :: WebUserId)
     u  <- lift $ runSql $ DB.get userId
-    r' <- lift $ runSql $ DB.selectList [UserRoleUserId ==. userId] []
-    r  <- lift $ runSql $ mapM (\a ->
-        DB.selectList [RoleId ==. userRoleRoleId (DB.entityVal a)] []) r'
+    r  <- lift $ runSql $ DB.selectList [UserRoleUserId ==. userId] []
     case u of
         Just u' -> return $ Just $ ReqState (Just $ webUserName u')
-                   (map (roleName . DB.entityVal) $ concat r)
+                   (map (userRoleRole . DB.entityVal) r)
         Nothing -> return $ Nothing
 
 restoreSession :: ReqM ()
@@ -98,7 +95,7 @@ restoreSession = do
                 Nothing -> return ()
         Nothing -> return ()
 
-requiredRole :: String -> ReqM () -> ReqM ()
+requiredRole :: Role -> ReqM () -> ReqM ()
 requiredRole r action = do
     rs <- lift $ roles <$> State.get
     if r `elem` rs then action else accessDenied

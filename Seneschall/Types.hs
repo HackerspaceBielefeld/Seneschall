@@ -51,6 +51,12 @@ data Config = Config {
 instance FromJSON Config
 instance ToJSON   Config
 
+data UserStatus = UserActive | UserInactive deriving (Show, Read, Eq)
+derivePersistField "UserStatus"
+
+data Role = User | Admin deriving (Show, Read, Eq)
+derivePersistField "Role"
+
 -- global values for the reader monad
 data Globals = Globals {
     config  :: Config,
@@ -61,11 +67,8 @@ data Globals = Globals {
 -- values per request for the state monad
 data ReqState = ReqState {
     userName :: Maybe String,
-    roles    :: [String]
+    roles    :: [Role]
 }
-
-data UserStatus = UserActive | UserInactive deriving (Show, Read, Eq)
-derivePersistField "UserStatus"
 
 newtype WebM a = WebM {runWebM :: R.ReaderT Globals (S.StateT ReqState IO) a}
     deriving ( Functor, Applicative, Monad , MonadIO
