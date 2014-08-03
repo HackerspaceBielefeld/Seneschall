@@ -33,10 +33,12 @@ addUser u p r = do
              let dbString = dbFromConfig c
              withPostgresqlConn (pack dbString) $ runSqlPersistM (do
                  u' <- insert $ WebUser u "" (getEncryptedPass enc) UserActive
-                 r' <- mapM (\a -> selectFirst [RoleName ==. a] []) r
-                 mapM_ (insert . UserRole u' . entityKey) $ catMaybes r'
+                 mapM_ (insert . UserRole u') $ readRole r
                  )
              putStrLn "user added"
+
+readRole :: [String] -> [Role]
+readRole = concatMap (fmap fst . reads)
 
 initDb :: IO ()
 initDb = do
