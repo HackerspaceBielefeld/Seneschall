@@ -21,15 +21,34 @@ import Seneschall.Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 WebUser
-    name     String
-    email    String
-    password ByteString
-    status   UserStatus
-    deriving Show
+    name      String
+    email     String
+    password  ByteString
+    status    UserStatus
+    deriving  Show
 UserRole
-    userId WebUserId
-    role   Role
-    deriving Show
+    userId    WebUserId
+    role      Role
+    deriving  Show
+Currency
+    name      String
+    precision Int
+    deriving  Show
+Article
+    name      String
+    ean       String
+    deriving  Show
+Purchase 
+    userId    WebUserId
+    date      Day
+    deriving  Show
+PurchasedArticle
+    purchase  PurchaseId
+    article   ArticleId
+    amount    Int
+    price     Int64
+    currency  CurrencyId
+    deriving  Show
 |]
 
 dbFromConfig :: Config -> String
