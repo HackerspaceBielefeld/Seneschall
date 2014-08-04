@@ -13,6 +13,8 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader (ask)
 import Data.ByteString.Char8 (pack)
 import Data.ByteString (ByteString)
+import Data.Time.Calendar (Day)
+import Data.Int
 import Database.Persist
 import Database.Persist.Postgresql
 import Database.Persist.TH

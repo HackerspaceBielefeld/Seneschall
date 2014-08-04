@@ -42,6 +42,7 @@ executable Seneschall
     scotty                >=0.8 && <0.9,
     scrypt                == 0.5.*,
     text                  == 1.1.*,
+    time                  == 1.4.*,
     transformers          == 0.3.*,
     wai-middleware-static == 0.6.*
 

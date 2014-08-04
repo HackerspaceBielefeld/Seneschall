@@ -97,6 +97,7 @@ restoreSession = do
 
 requiredRole :: Role -> ReqM () -> ReqM ()
 requiredRole r action = do
+    restoreSession
     rs <- lift $ roles <$> State.get
     if r `elem` rs then action else accessDenied
 
