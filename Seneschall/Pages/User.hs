@@ -26,7 +26,7 @@ import Seneschall.Session
 import Seneschall.Types
 
 loginPage :: Maybe T.Text -> ReqM ()
-loginPage e = html $ renderHtml $ template $ do
+loginPage e = template $ do
     case e of
         Just e' -> H.div ! A.class_ "error" $ H.toHtml e'
         Nothing -> return ()
@@ -102,8 +102,7 @@ requiredRole r action = do
     if r `elem` rs then action else accessDenied
 
 accessDenied :: ReqM ()
-accessDenied = html $ renderHtml $ template $
-    H.div ! A.class_ "error" $ "Access Denied"
+accessDenied = template $ H.div ! A.class_ "error" $ "Access Denied"
 
 
 testCredentials :: ReqM (Maybe Int)
