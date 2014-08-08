@@ -16,7 +16,6 @@ import Database.Persist.Postgresql ((==.))
 import qualified Text.Blaze.Html5 as H
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5.Attributes as A
-import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Web.Cookie
 import Web.Scotty.Trans
 
@@ -30,14 +29,15 @@ loginPage e = template $ do
     case e of
         Just e' -> H.div ! A.class_ "error" $ H.toHtml e'
         Nothing -> return ()
-    H.table $ do
-        H.tr $ do
+    H.form ! A.action "/login" ! A.method "POST" $ do
+        H.table $ do
+          H.tr $ do
             H.td "Username: "
             H.td $ H.input ! A.name "user" ! A.type_ "text" ! A.size "30"
-        H.tr $ do
+          H.tr $ do
             H.td "Password: "
             H.td $ H.input ! A.name "pass" ! A.type_ "password" ! A.size "30"
-    H.input ! A.type_ "submit" ! A.value "login"
+        H.input ! A.type_ "submit" ! A.value "login"
 
 login :: ReqM ()
 login = do
@@ -68,20 +68,20 @@ sessionFromCookie :: ReqM (Maybe Session)
 sessionFromCookie = do
     h <- header "Cookie"
     let cs = fmap (parseCookiesText . convert . encodeUtf8) h
-    case cs >>= (lookup "session") of
+    case cs >>= lookup "session" of
         Just c  -> lift $ lookupSession $ convert c
         Nothing -> return Nothing
 
 userFromSession :: Session -> ReqM (Maybe ReqState)
 userFromSession s = do
     let uKey   = user s
-        userId = (keyFromIntegral uKey :: WebUserId)
+        userId = keyFromIntegral uKey :: WebUserId
     u  <- lift $ runSql $ DB.get userId
     r  <- lift $ runSql $ DB.selectList [UserRoleUserId ==. userId] []
     case u of
         Just u' -> return $ Just $ ReqState (Just $ webUserName u')
                    (map (userRoleRole . DB.entityVal) r)
-        Nothing -> return $ Nothing
+        Nothing -> return Nothing
 
 restoreSession :: ReqM ()
 restoreSession = do
@@ -90,8 +90,7 @@ restoreSession = do
         Just s' -> do
             u <- userFromSession s'
             case u of
-                Just u' -> do
-                    lift $ State.put u'
+                Just u' -> lift $ State.put u'
                 Nothing -> return ()
         Nothing -> return ()
 

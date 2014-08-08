@@ -32,8 +32,9 @@ dispatcher = do
     conf <- lift $ config <$> ask
     middleware $ staticPolicy $ noDots >-> addBase (htdoc conf)
     get  "/"       $ User.restoreSession >> Root.root
-    post "/login"  User.login
-    get  "/logout" User.logout
+    get  "/login"  $ User.loginPage Nothing
+    post "/login"  $ User.login
+    get  "/logout" $ User.logout
     get  "/admin"  $ User.requiredRole Admin $ text "super secret admin page"
     notFound $ text "you appear to be lost"
 
