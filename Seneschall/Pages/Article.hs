@@ -4,6 +4,7 @@ module Seneschall.Pages.Article where
 
 import Control.Applicative ((<$>))
 import Control.Monad.Trans (lift)
+import Data.Foldable (foldl')
 import qualified Data.Text.Lazy as T
 import Database.Persist.Postgresql
 import Text.Blaze.Html5 ((!))
@@ -40,7 +41,7 @@ createHtml e = do
 list :: ReqM ()
 list = do
     as <- lift $ map entityVal <$> runSql (selectList [] [Asc ArticleName])
-    template $ H.table $ foldl (\h e -> h >> row e ) (return ()) as
+    template $ H.table $ foldl' (\h e -> h >> row e ) (return ()) as
     where
         row :: Article -> H.Html
         row a = H.tr $ do
