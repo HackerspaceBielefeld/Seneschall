@@ -40,7 +40,7 @@ Article
     name      String
     ean       String
     deriving  Show
-Purchase 
+Purchase
     userId    WebUserId
     date      Day
     deriving  Show
