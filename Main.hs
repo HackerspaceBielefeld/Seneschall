@@ -11,8 +11,11 @@ import Seneschall.Database
 import Seneschall.Session
 import Seneschall.Types
 
-import qualified Seneschall.Pages.Root as Root
-import qualified Seneschall.Pages.User as User
+import qualified Seneschall.Pages.Admin    as Admn
+import qualified Seneschall.Pages.Article  as Arti
+import qualified Seneschall.Pages.Purchase as Purr
+import qualified Seneschall.Pages.Root     as Root
+import qualified Seneschall.Pages.User     as User
 
 import Network.Wai.Middleware.Static
 import Web.Scotty.Trans
@@ -32,10 +35,16 @@ dispatcher = do
     conf <- lift $ config <$> ask
     middleware $ staticPolicy $ noDots >-> addBase (htdoc conf)
     get  "/"       $ User.restoreSession >> Root.root
+    get  "/article/new"     $ User.requiredRole User >> Arti.createPage
+    post "/article/create"  $ User.requiredRole User >> Arti.create
+    get  "/article/list"    $ User.requiredRole User >> Arti.list
+    get  "/purchase/new"    $ User.requiredRole User >> Purr.createPage
+    post "/purchase/create" $ User.requiredRole User >> Purr.create
+    get  "/purchase/list"   $ User.requiredRole User >> Purr.list
     get  "/login"  $ User.loginPage Nothing
     post "/login"  $ User.login
     get  "/logout" $ User.logout
-    get  "/admin"  $ User.requiredRole Admin $ text "super secret admin page"
+    get  "/admin"  $ User.requiredRole Admin $ Admn.admin
     notFound $ text "you appear to be lost"
 
 energise :: Globals -> AppM () -> IO ()
