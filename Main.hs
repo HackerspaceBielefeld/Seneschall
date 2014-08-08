@@ -35,12 +35,12 @@ dispatcher = do
     conf <- lift $ config <$> ask
     middleware $ staticPolicy $ noDots >-> addBase (htdoc conf)
     get  "/"       $ User.restoreSession >> Root.root
-    get  "/article/new"     $ User.requiredRole User >> Arti.createPage
-    post "/article/create"  $ User.requiredRole User >> Arti.create
-    get  "/article/list"    $ User.requiredRole User >> Arti.list
-    get  "/purchase/new"    $ User.requiredRole User >> Purr.createPage
-    post "/purchase/create" $ User.requiredRole User >> Purr.create
-    get  "/purchase/list"   $ User.requiredRole User >> Purr.list
+    get  "/article/new"     $ User.requiredRole User $ Arti.createPage
+    post "/article/create"  $ User.requiredRole User $ Arti.create
+    get  "/article/list"    $ User.requiredRole User $ Arti.list
+    get  "/purchase/new"    $ User.requiredRole User $ Purr.createPage
+    post "/purchase/create" $ User.requiredRole User $ Purr.create
+    get  "/purchase/list"   $ User.requiredRole User $ Purr.list
     get  "/login"  $ User.loginPage Nothing
     post "/login"  $ User.login
     get  "/logout" $ User.logout
