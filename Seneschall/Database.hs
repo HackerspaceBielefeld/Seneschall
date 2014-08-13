@@ -13,6 +13,7 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader (ask)
 import Data.ByteString.Char8 (pack)
 import Data.ByteString (ByteString)
+import qualified Data.Text.Lazy as T
 import Data.Time.Calendar (Day)
 import Data.Int
 import Database.Persist
@@ -23,8 +24,8 @@ import Seneschall.Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 WebUser
-    name      String
-    email     String
+    name      T.Text
+    email     T.Text
     password  ByteString
     status    UserStatus
     deriving  Show
@@ -33,12 +34,13 @@ UserRole
     role      Role
     deriving  Show
 Currency
-    name      String
+    name      T.Text
+    symbol    T.Text
     precision Int
     deriving  Show
 Article
-    name      String
-    ean       String
+    name      T.Text
+    ean       T.Text
     deriving  Show
 Purchase
     userId    WebUserId

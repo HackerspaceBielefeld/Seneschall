@@ -4,7 +4,7 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Seneschall.Session 
+module Seneschall.Session
     ( createSessionStore
     , createSession
     , lookupSession

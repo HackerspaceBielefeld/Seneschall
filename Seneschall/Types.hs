@@ -66,7 +66,7 @@ data Globals = Globals {
 
 -- values per request for the state monad
 data ReqState = ReqState {
-    userName :: Maybe String,
+    userName :: Maybe Text,
     roles    :: [Role]
 }
 

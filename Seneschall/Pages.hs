@@ -12,7 +12,7 @@ import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
-import Web.Scotty.Trans (html)
+import Web.Scotty.Trans (html, param)
 
 template :: H.Html -> ReqM ()
 template body = do
@@ -34,3 +34,4 @@ menu rs = H.ul ! A.class_ "menu" $ do
         H.li $ H.a ! A.href "/admin" $ "admin panel"
     when (rs /= []) $ H.li $ H.a ! A.href "/logout" $ "logout"
     when (null rs ) $ H.li $ H.a ! A.href "/login"  $ "login"
+
